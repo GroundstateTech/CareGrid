@@ -1,6 +1,6 @@
 # CareGrid
 
-**CareGrid — Unified Patient Signal Intelligence** is a lightweight desktop platform for normalizing, reviewing, and visualizing heterogeneous medical-device telemetry and log data.
+**CareGrid - Unified Patient Signal Intelligence** is a lightweight desktop platform for normalizing, reviewing, and visualizing heterogeneous medical-device telemetry and log data.
 
 > **Important:** CareGrid is currently prototype/research software. It is **not an FDA-cleared medical device**, not validated for primary clinical alarm annunciation, and must not replace approved bedside monitoring, nurse-call, or life-safety systems. Use de-identified/synthetic data for development unless your deployment has appropriate privacy, security, validation, and institutional approvals.
 
