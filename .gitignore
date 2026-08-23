@@ -1,12 +1,38 @@
 .venv/
+venv/
 __pycache__/
 *.py[cod]
-caregrid_data.db
+
+# Secrets / local configuration
+.env
+.env.*
+!.env.example
 caregrid_settings.json
-snapshots/*.csv
+*.local.json
+
+# Runtime databases / exports / snapshots
+caregrid_data.db
+*.db
+*.sqlite
+*.sqlite3
+snapshots/
+exports/
+*.csv.bak
+
+# Logs / caches / coverage
 *.log
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Packaging / build output
 build/
 dist/
 *.spec
+
+# Editors / OS
+.vscode/
+.idea/
 .DS_Store
 Thumbs.db
+Desktop.ini
