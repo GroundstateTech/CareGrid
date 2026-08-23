@@ -1,0 +1,17 @@
+{
+  "api_host": "127.0.0.1",
+  "api_port": 8765,
+  "hl7_host": "127.0.0.1",
+  "hl7_port": 2575,
+  "syslog_host": "127.0.0.1",
+  "syslog_port": 5514,
+  "mqtt_host": "localhost",
+  "mqtt_port": 1883,
+  "mqtt_topic": "caregrid/+/+/vitals",
+  "serial_port": "COM3",
+  "serial_baud": 9600,
+  "poll_interval": 1.0,
+  "snapshot_every_min": 15,
+  "watch_folder": "",
+  "webhook": ""
+}
