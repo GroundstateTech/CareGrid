@@ -16,6 +16,7 @@ from core.api import start_rest_api
 from core.datastore import DataStore
 from core.extractor import VitalsExtractor
 from core.normalizer import DEFAULT_THRESHOLDS, SCHEMA_FIELDS, normalize_row
+from core.patient_record import PatientRecordStore
 from core.settings import Settings
 from core.snapshot import Snapshotter
 from ui.main_ui import CareGridApp
@@ -24,11 +25,12 @@ APP_TITLE='CareGrid — Unified Patient Signal Intelligence'
 ROOT=os.path.dirname(os.path.abspath(__file__))
 SETTINGS_PATH=os.path.join(ROOT,'caregrid_settings.json')
 DB_PATH=os.path.join(ROOT,'caregrid_data.db')
+PATIENT_RECORD_DB_PATH=os.path.join(ROOT,'caregrid_patient_records.db')
 SNAPSHOT_PATH=os.path.join(ROOT,'snapshots')
 
 def main():
     settings=Settings(SETTINGS_PATH).load();thresholds=settings.get('thresholds',DEFAULT_THRESHOLDS)
-    ds=DataStore(DB_PATH,SCHEMA_FIELDS,50000);extractor=VitalsExtractor();notifier=Notifier(settings.get('webhook',''),settings.get('alarm_command',''));alerts=AlertManager(thresholds,notifier);reader=FileReader();ingest_q=queue.Queue()
+    ds=DataStore(DB_PATH,SCHEMA_FIELDS,50000);patient_records=PatientRecordStore(PATIENT_RECORD_DB_PATH);extractor=VitalsExtractor();notifier=Notifier(settings.get('webhook',''),settings.get('alarm_command',''));alerts=AlertManager(thresholds,notifier);reader=FileReader();ingest_q=queue.Queue()
     def enqueue_context(ctx):ingest_q.put(('context',ctx))
     adapters={
         'serial':SerialAdapter(enqueue_context,settings.get('serial_port','COM3'),int(settings.get('serial_baud',9600))),
@@ -60,7 +62,7 @@ def main():
     try:api=start_rest_api(int(settings.get('api_port',8765)),lambda:list(ds.latest_by_patient().values()),lambda:alerts.history()[-200:],lambda n:ds.tail(n),host=settings.get('api_host','127.0.0.1'))
     except Exception as e:print('[CareGrid API]',e)
     snapshots=Snapshotter(SNAPSHOT_PATH,ds,int(settings.get('snapshot_every_min',15)));snapshots.start()
-    app=CareGridApp(APP_TITLE,settings,ds,alerts,notifier,extractor,reader,adapters);app.on_files_selected=ingest_files;app.snapshotter=snapshots
+    app=CareGridApp(APP_TITLE,settings,ds,alerts,notifier,extractor,reader,adapters);app.patient_records=patient_records;app.on_files_selected=ingest_files;app.snapshotter=snapshots
     def apply_settings(cfg):
         for k,v in cfg.items():settings.set(k,v)
         settings.save();alerts.update_thresholds(cfg.get('thresholds',alerts.thresholds));notifier.webhook=cfg.get('webhook','')
