@@ -1,1 +1,64 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CareGrid Local Dashboard</title><style>body{font-family:system-ui;background:#eaf2f8;color:#183247;margin:0}.top{background:#245579;color:white;padding:16px 22px;font-weight:700}.wrap{padding:18px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}.card{background:white;border:1px solid #c5d7e4;border-radius:10px;padding:14px}.muted{color:#617789;font-size:13px}.vals{font-size:18px;margin-top:8px}</style></head><body><div class="top">CAREGRID — Local Patient Dashboard</div><div class="wrap"><div id="status" class="muted">Connecting to localhost:8765…</div><div id="grid" class="grid"></div></div><script>async function tick(){try{let r=await fetch('http://127.0.0.1:8765/patients');let p=await r.json();document.getElementById('status').textContent=p.length+' active patient rows';document.getElementById('grid').innerHTML=p.map(x=>`<div class="card"><b>${x.patient_id||'Unassigned'}</b><div class="muted">${x.device_type||''} ${x.device_id||''}</div><div class="vals">HR ${x.hr||'—'} · SpO₂ ${x.spo2||'—'}<br>BP ${x.bp_sys||'—'}/${x.bp_dia||'—'} · RR ${x.rr||'—'}<br>Temp ${x.temp||'—'}</div></div>`).join('')}catch(e){document.getElementById('status').textContent='CareGrid API unavailable: '+e}}tick();setInterval(tick,1500)</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CareGrid Local Dashboard</title>
+  <style>
+    body { font-family: system-ui; background: #eaf2f8; color: #183247; margin: 0; }
+    .top { background: #245579; color: white; padding: 16px 22px; font-weight: 700; }
+    .wrap { padding: 18px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+    .card { background: white; border: 1px solid #c5d7e4; border-radius: 10px; padding: 14px; }
+    .muted { color: #617789; font-size: 13px; }
+    .vals { font-size: 18px; margin-top: 8px; white-space: pre-line; }
+  </style>
+</head>
+<body>
+  <div class="top">CAREGRID — Local Patient Dashboard</div>
+  <div class="wrap">
+    <div id="status" class="muted">Connecting to localhost:8765…</div>
+    <div id="grid" class="grid"></div>
+  </div>
+  <script>
+    const status = document.getElementById('status');
+    const grid = document.getElementById('grid');
+
+    function textElement(tag, className, value) {
+      const element = document.createElement(tag);
+      if (className) element.className = className;
+      element.textContent = value;
+      return element;
+    }
+
+    function patientCard(patient) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.append(textElement('b', '', patient.patient_id || 'Unassigned'));
+      card.append(textElement('div', 'muted', `${patient.device_type || ''} ${patient.device_id || ''}`.trim()));
+      card.append(textElement('div', 'vals',
+        `HR ${patient.hr || '—'} · SpO₂ ${patient.spo2 || '—'}\n` +
+        `BP ${patient.bp_sys || '—'}/${patient.bp_dia || '—'} · RR ${patient.rr || '—'}\n` +
+        `Temp ${patient.temp || '—'}`));
+      return card;
+    }
+
+    async function tick() {
+      try {
+        const response = await fetch('http://127.0.0.1:8765/patients');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const patients = await response.json();
+        if (!Array.isArray(patients)) throw new Error('invalid patient response');
+        status.textContent = `${patients.length} active patient rows`;
+        grid.replaceChildren(...patients.map(patientCard));
+      } catch (error) {
+        status.textContent = `CareGrid API unavailable: ${error.message || error}`;
+        grid.replaceChildren();
+      }
+    }
+
+    tick();
+    setInterval(tick, 1500);
+  </script>
+</body>
+</html>
