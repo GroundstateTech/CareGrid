@@ -1,4 +1,5 @@
 import datetime as dt
+import shlex
 import subprocess
 import time
 from threading import RLock
@@ -16,7 +17,7 @@ class Notifier:
             try:requests.post(self.webhook,json=payload,timeout=2)
             except Exception:pass
         if self.command:
-            try:subprocess.Popen(self.command,shell=True)
+            try:subprocess.Popen(shlex.split(self.command),shell=False)
             except Exception:pass
 
 class AlertManager:
