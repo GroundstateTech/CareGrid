@@ -9,16 +9,20 @@ except Exception:
     requests=None
 
 class Notifier:
-    def __init__(self,webhook='',command=''):self.webhook=webhook;self.command=command
+    def __init__(self,webhook='',command=''):self.webhook=webhook;self.command=command;self.last_errors=[]
     def alert(self,payload):
+        self.last_errors=[]
         try:print('\a',end='',flush=True)
         except Exception:pass
         if self.webhook and requests:
-            try:requests.post(self.webhook,json=payload,timeout=2)
-            except Exception:pass
+            try:
+                response=requests.post(self.webhook,json=payload,timeout=2)
+                response.raise_for_status()
+            except Exception as exc:self.last_errors.append(f'webhook: {exc}')
         if self.command:
             try:subprocess.Popen(shlex.split(self.command),shell=False)
-            except Exception:pass
+            except Exception as exc:self.last_errors.append(f'command: {exc}')
+        return not self.last_errors
 
 class AlertManager:
     def __init__(self,thresholds,notifier):self.thresholds=thresholds;self.notifier=notifier;self.silence_until=0.0;self._history=[];self._active={};self._lock=RLock()
