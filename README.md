@@ -55,6 +55,18 @@ tests/                 unit tests
 
 Before live clinical use, CareGrid needs vendor-specific validated adapters, isolated testing, authentication/roles, encryption, secure key handling, durable audit logs, fail-safe alarm behavior, device/patient association controls, lifecycle/risk/cybersecurity documentation, verification/validation, and appropriate regulatory review.
 
+## Validation
+
+Install the development requirements into an isolated environment, then run the
+regression suite:
+
+```bash
+python -m venv .venv
+python -m pip install -r requirements-dev.txt
+python -m compileall -q caregrid_app.py core adapters ui
+python -m pytest -q
+```
+
 ## Contributing
 
 Community pull requests are welcome. See `CONTRIBUTING.md`. Never commit PHI, credentials, proprietary device specifications, or data you are not authorized to redistribute.
