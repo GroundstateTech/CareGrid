@@ -1,4 +1,5 @@
 import os,tempfile
+from pathlib import Path
 from unittest.mock import patch
 from core.normalizer import normalize_row,SCHEMA_FIELDS,DEFAULT_THRESHOLDS
 from core.extractor import VitalsExtractor
@@ -23,3 +24,11 @@ def test_notifier_uses_argument_safe_command_and_reports_failure():
     with patch('core.alerting.subprocess.Popen',side_effect=OSError('missing')):
         assert notifier.alert({'type':'test'}) is False
         assert notifier.last_errors == ['command: missing']
+
+
+def test_standalone_contract_and_local_settings():
+    assert (Path(__file__).resolve().parents[1] / 'docs' / 'STANDALONE_OPERATION.md').is_file()
+    with tempfile.TemporaryDirectory() as td:
+        from core.settings import Settings
+        settings=Settings(os.path.join(td,'settings.json')).load()
+        assert settings.get('identity_provider') is None
