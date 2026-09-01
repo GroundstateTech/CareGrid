@@ -78,3 +78,7 @@ See `SUPPORT.md` for optional Patreon and PayPal support. Support does not purch
 ## License
 
 **GPL-3.0-or-later** for repository source code unless a file states otherwise. Third-party device protocols, trademarks, assets, dependencies, and interface specifications remain subject to their respective rights and licenses.
+
+## Standalone-first deployment
+
+This project does not require Groundstate Admin Center or a Groundstate account. Core operation remains local and independently deployable. See [docs/STANDALONE_OPERATION.md](docs/STANDALONE_OPERATION.md) for the product-specific identity and outage boundary.
