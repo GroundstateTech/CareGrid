@@ -73,7 +73,11 @@ Community pull requests are welcome. See `CONTRIBUTING.md`. Never commit PHI, cr
 
 ## Support
 
-See `SUPPORT.md` for optional Patreon and PayPal support. Support does not purchase ownership, equity, IP rights, or special licensing rights.
+See `docs/getting-started/SUPPORT.md` for optional Patreon and PayPal support. Support does not purchase ownership, equity, IP rights, or special licensing rights.
+
+## Documentation
+
+See the [documentation index](docs/README.md).
 
 ## License
 
@@ -81,4 +85,4 @@ See `SUPPORT.md` for optional Patreon and PayPal support. Support does not purch
 
 ## Standalone-first deployment
 
-This project does not require Groundstate Admin Center or a Groundstate account. Core operation remains local and independently deployable. See [docs/STANDALONE_OPERATION.md](docs/STANDALONE_OPERATION.md) for the product-specific identity and outage boundary.
+This project does not require Groundstate Admin Center or a Groundstate account. Core operation remains local and independently deployable. See [Standalone operation](docs/governance/STANDALONE_OPERATION.md) for the product-specific identity and outage boundary.
