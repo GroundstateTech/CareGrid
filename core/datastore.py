@@ -37,3 +37,14 @@ class DataStore:
         with self._lock:return list(self.rows[-max(0,min(int(limit),10000)):])
     def count(self):
         with self._lock:return len(self.rows)
+
+    def flush(self):
+        """Persist all in-memory readings so a normal shutdown loses no observations."""
+        with self._lock:
+            pending=list(self.rows)
+            self._offload(pending)
+            self.rows.clear()
+            return len(pending)
+
+    def close(self):
+        return self.flush()
