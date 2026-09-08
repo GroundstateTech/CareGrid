@@ -70,7 +70,7 @@ def main():
     app.on_settings_changed=apply_settings
     try:app.mainloop()
     finally:
-        running=False;snapshots.stop()
+        running=False;snapshots.stop();ds.flush()
         if api:
             try:api.shutdown();api.server_close()
             except Exception:pass
